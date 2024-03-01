@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Main</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=Annapurna+SIL:wght@400;700&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=Annapurna+SIL:wght@400;700&display=swap");
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Arial", sans-serif;
+        background: #b8d9d3;
+        display: flex;
+        flex-direction: column;
+        scroll-behavior: smooth;
+        align-items: center;
+        min-height: 100vh;
+        height: 120vh;
+        margin: 0;
+        font-family: "Kode Mono", monospace;
+      }
+
+      header {
+        background-color: snow;
+        color: black;
+        width: 100%;
+        position: static;
+        padding: 1rem;
+        text-align: center;
+        z-index: 9999;
+      }
+
+      nav {
+        display: flex;
+        justify-content: center;
+        font-size: 24px;
+        text-align: center;
+        padding-left: 20px;
+        font-family: "Oswald", sans-serif;
+        background-color: transparent;
+      }
+
+      nav a {
+        color: black;
+        text-decoration: none;
+        padding: 0.8rem 1.3rem;
+        transition: 0.3s ease-in;
+      }
+
+      nav a:hover {
+        color: white;
+      }
+
+      .welcome {
+        position: static;
+        justify-content: flex-start;
+        display: flex;
+        align-items: start;
+        margin-top: 20px;
+        margin-left: 20px;
+        opacity: 0;
+        animation: fadeIn 2s ease-in-out forwards;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      section {
+        padding-top: 15%;
+        font-family: "Annapurna SIL", serif;
+        flex-grow: 1;
+      }
+
+      .book_container li {
+        border: 2px solid black;
+        max-width: 800px;
+        margin: 0 auto;
+        margin-bottom: 20px;
+        border-radius: 16px;
+        box-shadow: -9px 9px 10px -4px rgba(0, 0, 0, 0.26);
+        display: flex;
+        flex-direction: column;
+        text-align: center;
+        padding: 20px;
+      }
+
+      .book_container p {
+        margin-bottom: 10px;
+        font-size: 18px;
+        font-weight: 600;
+      }
+
+      section h2 {
+        font-size: 24px;
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      @media screen and (max-width: 600px) {
+        nav {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        nav a {
+          margin-top: 0.5rem;
+        }
+      }
+
+      #quizModal {
+        display: none;
+      }
+
+      .modal-content {
+        background-color: #fefefe;
+        margin: 0 auto;
+        position: absolute;
+        top: 25%;
+        padding: 20px;
+        left: 50%;
+  transform: translate(-50%, 0);
+  font-family: "Oswald", sans-serif;
+        align-self: center;
+        justify-content: center;
+        border: 1px solid #b8d9d3;
+        width: 83%;
+        text-align: left;
+      }
+
+      #end-quiz {
+        position: relative;
+      }
+
+      .quiz_container {
+        text-align: center;
+        font-family: "Oswald", sans-serif;
+
+        margin-top:5%;
+      }
+
+      /* Quiz Questions */
+      .question {
+        margin-bottom: 20px;
+      }
+
+      .question p {
+        font-size: 18px;
+        font-weight: 600;
+      }
+
+      /* Quiz Answers */
+      .answers {
+        display: flex;
+        flex-direction: column;
+        margin-top: 10px;
+      }
+
+      label {
+        margin-bottom: 10px;
+        display: block;
+      }
+
+      input[type="radio"] {
+        margin-right: 5px;
+      }
+
+      /* Timer Styles */
+      #timer {
+        font-size: 16px;
+        top: 20px;
+        top: 41px;
+        right: 57px;
+        position: absolute;
+        display: flex;
+      }
+
+      /* Button Styles */
+      button {
+        background-color: snow;
+        color: black;
+        font-family: "Oswald", sans-serif;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        border: 2px solid #b8d9d3;
+        cursor: pointer;
+        transition: background-color 0.3s ease-in-out;
+      }
+
+      button:hover {
+        background-color: #b8d9d3;
+        color: snow;
+      }
+      #quiz-title {
+        font-size: 32px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: #333; /* Adjust the color as needed */
+      }
+
+      /* Responsive Styles */
+      @media screen and (max-width: 768px) {
+        .modal-content {
+          width: 90%;
+        }
+      }
+
+      @media screen and (max-width: 600px) {
+        .modal-content {
+          width: 100%;
+        }
+      }
+
+      #social-sharing {
+        position: relative;
+        margin: -320px auto;
+        width: 500px;
+        margin-bottom: 10%;
+      }
+
+
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <nav>
+        <a href="#books">
+          <% if (language === 'ru') { %> Наши Книши <% } else { %> OUR BOOKS <%
+          } %></a
+        >
+        <a href="#world">
+          <% if (language === 'ru') { %> Книги из Мира <% } else { %> WORLD
+          BOOKS <% } %>
+        </a>
+        <button href="" onclick="startQuiz()">   <% if (language === 'ru') { %> Викорина <% } else { %> QUIZ<% } %></a>
+      </nav>
+    </header>
+    <h1 class="welcome">
+      <% if (language === 'ru') { %>Привет, <%= username %>!<% } else { %>Hello,
+      <%= username %>!<% } %>
+    </h1>
+
+    <section id="books">
+      <div class="book_container">
+        <h2>
+          <% if (language === 'ru') { %> Наши Книши <% } else { %> OUR BOOKS <%
+          } %>
+        </h2>
+        <ul>
+          <% books.forEach(book => { %>
+          <li>
+            <p class="title">
+              <% if (language === 'ru') { %>Название: <%= book.title %><% } else
+              { %>Title: <%= book.title %><% } %>
+            </p>
+            <p class="author">
+              <% if (language === 'ru') { %>Автор: <%= book.author %><% } else {
+              %>Author: <%= book.author %><% } %>
+            </p>
+            <p class="genre">
+              <% if (language === 'ru') { %>Жанр: <%= book.genre %><% } else {
+              %>Genre: <%= book.genre %><% } %>
+            </p>
+          </li>
+          <% }); %>
+        </ul>
+      </div>
+    </section>
+    <section id="world">
+      <h2>
+        <% if (language === 'ru') { %> Книги из мира <% } else { %> WORLD BOOKS
+        <% } %>
+      </h2>
+      <div class="book_container">
+        <ul>
+          <% if (googleBooksData && googleBooksData.length > 0) { %> <%
+          googleBooksData.forEach(book => { %>
+          <li>
+            <p class="title">
+              <% if (language === 'ru') { %>Название: <%= book.volumeInfo.title
+              %><% } else { %>Title: <%= book.volumeInfo.title %><% } %>
+            </p>
+            <p class="author">
+              <% if (language === 'ru') { %>Автор: <%= book.volumeInfo.authors ?
+              book.volumeInfo.authors.join(', ') : 'Unknown Author' %><% } else
+              { %>Author: <%= book.volumeInfo.authors ?
+              book.volumeInfo.authors.join(', ') : 'Unknown Author' %><% } %>
+            </p>
+            <p class="genre">
+              <% if (language === 'ru') { %>Жанр: <%= book.volumeInfo.categories
+              ? book.volumeInfo.categories.join(', ') : 'Unknown Genre' %><% }
+              else { %>Genre: <%= book.volumeInfo.categories ?
+              book.volumeInfo.categories.join(', ') : 'Unknown Genre' %><% } %>
+            </p>
+          </li>
+          <% }); %> <% } else { %>
+          <li>
+            <p>
+              <% if (language === 'ru') { %>Нет доступных книг из Google Books
+              API.<% } else { %>No additional books from Google Books API
+              available.<% } %>
+            </p>
+          </li>
+          <% } %>
+        </ul>
+      </div>
+    </section>
+    <section class="quiz_container">
+      <div id="quizModal" class="modal">
+        <div class="modal-content">
+          <section id="quiz">
+            <div class="quiz_container">
+              <h2>
+                <% if (language === 'ru') { %> Викторина о Книгах <% } else { %>
+                BOOK QUIZ <% } %>
+              </h2>
+
+              <h1 id="quiz-title">
+                <!-- New: Quiz Introduction -->
+                <% if (language === 'ru') { %>Пройди нашу викторину и проверь
+                свои знания о книгах!<% } else { %>Take our quiz and test your
+                knowledge about books!<% } %>
+              </h1>
+
+              <div class="question">
+                <p>
+                  1. <% if (language === 'ru') { %>Кто написал "Войну и мир"?<%
+                  } else { %>Who wrote "War and Peace"?<% } %>
+                </p>
+                <div class="answers">
+                  <label>
+                    <input type="radio" name="q1" value="a" />
+                    <% if (language === 'ru') { %>Лев Толстой<% } else { %>Leo
+                    Tolstoy<% } %>
+                  </label>
+                  <label>
+                    <input type="radio" name="q1" value="b" />
+                    <% if (language === 'ru') { %>Федор Достоевский<% } else {
+                    %>Fyodor Dostoevsky<% } %>
+                  </label>
+                  <label>
+                    <input type="radio" name="q1" value="c" />
+                    <% if (language === 'ru') { %>Александр Пушкин<% } else {
+                    %>Alexander Pushkin<% } %>
+                  </label>
+                </div>
+              </div>
+              <div class="question">
+                <p>
+                  2. <% if (language === 'ru') { %>Какой автор написал "1984"?<%
+                  } else { %>Which author wrote "1984"?<% } %>
+                </p>
+                <div class="answers">
+                  <label>
+                    <input type="radio" name="q2" value="a" />
+                    <% if (language === 'ru') { %>Джордж Оруэлл<% } else {
+                    %>George Orwell<% } %>
+                  </label>
+                  <label>
+                    <input type="radio" name="q2" value="b" />
+                    <% if (language === 'ru') { %>Рэй Брэдбери<% } else { %>Ray
+                    Bradbury<% } %>
+                  </label>
+                  <label>
+                    <input type="radio" name="q2" value="c" />
+                    <% if (language === 'ru') { %>Алдоус Хаксли<% } else {
+                    %>Aldous Huxley<% } %>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Question 3 -->
+              <div class="question">
+                <p>
+                  3. <% if (language === 'ru') { %>Какой роман считается
+                  шедевром Джейн Остин?<% } else { %>Which novel is considered a
+                  masterpiece of Jane Austen?<% } %>
+                </p>
+                <div class="answers">
+                  <label>
+                    <input type="radio" name="q3" value="a" />
+                    <% if (language === 'ru') { %>Гордость и предубеждение<% }
+                    else { %>Pride and Prejudice<% } %>
+                  </label>
+                  <label>
+                    <input type="radio" name="q3" value="b" />
+                    <% if (language === 'ru') { %>Эмма<% } else { %>Emma<% } %>
+                  </label>
+                  <label>
+                    <input type="radio" name="q3" value="c" />
+                    <% if (language === 'ru') { %>Разум и чувства<% } else {
+                    %>Sense and Sensibility<% } %>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Question 4 -->
+              <div class="question">
+                <p>
+                  4. <% if (language === 'ru') { %>Какой жанр преобладает в
+                  произведениях Агаты Кристи?<% } else { %>Which genre
+                  predominates in the works of Agatha Christie?<% } %>
+                </p>
+                <div class="answers">
+                  <label>
+                    <input type="radio" name="q4" value="a" />
+                    <% if (language === 'ru') { %>Детектив<% } else {
+                    %>Detective<% } %>
+                  </label>
+                  <label>
+                    <input type="radio" name="q4" value="b" />
+                    <% if (language === 'ru') { %>Фантастика<% } else {
+                    %>Science Fiction<% } %>
+                  </label>
+                  <label>
+                    <input type="radio" name="q4" value="c" />
+                    <% if (language === 'ru') { %>Романтика<% } else {
+                    %>Romance<% } %>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Question 5 -->
+              <div class="question">
+                <p>
+                  5. <% if (language === 'ru') { %>Кто является автором "Мастера
+                  и Маргариты"?<% } else { %>Who is the author of "The Master
+                  and Margarita"?<% } %>
+                </p>
+                <div class="answers">
+                  <label>
+                    <input type="radio" name="q5" value="a" />
+                    <% if (language === 'ru') { %>Михаил Булгаков<% } else {
+                    %>Mikhail Bulgakov<% } %>
+                  </label>
+                  <label>
+                    <input type="radio" name="q5" value="b" />
+                    <% if (language === 'ru') { %>Иван Бунин<% } else { %>Ivan
+                    Bunin<% } %>
+                  </label>
+                  <label>
+                    <input type="radio" name="q5" value="c" />
+                    <% if (language === 'ru') { %>Анна Ахматова<% } else {
+                    %>Anna Akhmatova<% } %>
+                  </label>
+                </div>
+              </div>
+              <div id="timer">
+                Time remaining: <span id="countdown">60</span> seconds
+              </div>
+              <button onclick="submitQuiz()">
+                <% if (language === 'ru') { %>Проверить результат<% } else {
+                %>Check Result<% } %>
+              </button>
+            </div>
+            <button id="end-quiz" onclick="closeQuiz()">
+              <% if (language === 'ru') { %>Закрыть<% } else { %>Close<% } %>
+            </button>
+          </section>
+        </div>
+      </div>
+      <div id="social-sharing">
+        <p>       <% if (language === 'ru') { %> Поделиться Результатом <% } else { %> Share Ruslts <%
+        } %></a
+      ></p>
+        <button onclick="shareOnFacebook()">Share on Facebook</button>
+        <button onclick="shareOnInst()">Share on Instagram</button>
+        <button onclick="shareOnLinkedIn()">Share on LinkedIn</button>
+      </div>
+    </section>
+
+
+
+    <script>
+      const correctAnswers = ["a", "b", "a", "c", "d"];
+
+      document.addEventListener("DOMContentLoaded", function () {
+        if (performance.navigation.type === 1) {
+          window.scrollTo(0, 0);
+        }
+        document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+          anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+
+            document.querySelector(this.getAttribute("href")).scrollIntoView({
+              behavior: "smooth",
+            });
+          });
+          document.querySelector(".welcome").style.opacity = "1";
+        });
+
+        window.onbeforeunload = function () {
+          window.scrollTo(0, 0);
+        };
+      });
+
+      function startQuiz() {
+        document.getElementById("quizModal").style.display = "block";
+        startCountdown();
+      }
+
+      function closeQuiz() {
+        document.getElementById("quizModal").style.display = "none";
+        countdownValue = 60;
+        document.getElementById("countdown").innerText = countdownValue;
+        clearInterval(countdownInterval);
+      }
+
+      function submitQuiz() {
+        clearInterval(countdownInterval);
+
+        let score = 0;
+        const selectedAnswers = [];
+
+        for (let i = 1; i <= 5; i++) {
+          const selectedAnswer = document.querySelector(
+            `input[name="q${i}"]:checked`
+          );
+
+          if (selectedAnswer) {
+            const userAnswer = selectedAnswer.value;
+            selectedAnswers.push(userAnswer);
+
+            if (userAnswer === correctAnswers[i - 1]) {
+              score++;
+            }
+          }
+        }
+
+        const resultMessage = `You scored ${score} out of 5!`;
+
+        saveQuizResultsToDB(selectedAnswers, score);
+
+        document.getElementById("quiz-title").innerText = resultMessage;
+      }
+
+      let countdownValue = 60;
+      let countdownInterval;
+
+      function startCountdown() {
+        const countdownElement = document.getElementById("countdown");
+        countdownInterval = setInterval(function () {
+          countdownValue--;
+
+          if (countdownValue >= 0) {
+            countdownElement.innerText = countdownValue;
+          } else {
+            clearInterval(countdownInterval);
+            submitQuiz();
+            closeQuiz();
+          }
+        }, 1000);
+      }
+
+      function shareOnFacebook() {
+        const quizResult = document.getElementById("quiz-title").innerText;
+        const urlToShare = encodeURIComponent(window.location.href);
+        const facebookShareURL = `https://www.facebook.com/sharer/sharer.php?u=${urlToShare}&quote=${quizResult}`;
+        window.open(facebookShareURL, "_blank", "width=600,height=400");
+      }
+
+      function shareOnInst() {
+        const quizResult = document.getElementById("quiz-title").innerText;
+        const urlToShare = encodeURIComponent(window.location.href);
+        const instagramShareURL = `https://www.instagram.com/post?url=${urlToShare}&caption=${quizResult}`;
+        window.open(instagramShareURL, "_blank", "width=600,height=400");
+      }
+
+      function shareOnLinkedIn() {
+        const quizResult = document.getElementById("quiz-title").innerText;
+        const urlToShare = encodeURIComponent(window.location.href);
+        const linkedInShareURL = `https://www.linkedin.com/sharing/share-offsite/?url=${urlToShare}&summary=${quizResult}`;
+        window.open(linkedInShareURL, "_blank", "width=600,height=400");
+      }
+
+      async function saveQuizResultsToDB(selectedAnswers, score) {
+        try {
+          const response = await fetch("/saveQuizResults", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              selectedAnswers: selectedAnswers,
+              score: score,
+            }),
+          });
+
+          if (response.ok) {
+            console.log("Quiz results saved successfully");
+          } else {
+            console.error("Error saving quiz results");
+          }
+        } catch (error) {
+          console.error("Error saving quiz results:", error);
+        }
+      }
+    </script>
+    <script src="/constants.js"></script>
+  </body>
+</html>
