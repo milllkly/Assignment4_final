@@ -41,7 +41,7 @@ const userSchema = new mongoose.Schema({
 const User = mongoose.model('User', userSchema);
 
 app.use(session({
-    secret: 'se-2201',
+    secret: 'se-2226',
     resave: false,
     saveUninitialized: true
   }));
